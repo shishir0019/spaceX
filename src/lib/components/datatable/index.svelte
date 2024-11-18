@@ -45,7 +45,7 @@
   };
 </script>
 {#if loading}
-  <div class=" w-full h-[400px] bg-gray-100"></div>
+  <div class="w-full h-[400px] bg-gray-100"></div>
 {:else}
   {#if listView === "list"}
     <Table items={data}>

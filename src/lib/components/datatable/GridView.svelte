@@ -1,10 +1,11 @@
 <script lang="ts">
-  import { Button, Progressbar, Card } from "flowbite-svelte";
+  import { Button, Progressbar, Card, Badge } from "flowbite-svelte";
   import { LinkOutline } from "flowbite-svelte-icons";
 
   import type { ILandingZone } from "$lib/types";
 
-  let { item, showMessage }: { item: ILandingZone, showMessage: Function } = $props();
+  let { item, showMessage }: { item: ILandingZone; showMessage: Function } =
+    $props();
 
   const successRate = (landingZone: ILandingZone): number => {
     return Math.round(
@@ -16,18 +17,23 @@
 <Card class="shadow-none">
   <blockquote class="text-gray-500 flex flex-col h-full">
     <div class="flex-1">
-      <h3 class="text-lg font-semibold text-gray-900">
-        {item.full_name}
-      </h3>
-      <small class="text-green-700">{item.location.name}</small>
-      <small class="text-green-700">({item.location.region})</small>
+      <div>
+        <Badge
+          rounded
+          color={(item as ILandingZone).status === "active"
+            ? "green"
+            : (item as ILandingZone).status === "retired"
+              ? "red"
+              : "blue"}>{(item as ILandingZone).status}</Badge
+        >
+        <h3 class="text-lg font-semibold text-gray-900">{item.full_name}</h3>
+      </div>
+      <small class="text-gray-500">{item.location.name}</small>
+      <small class="text-green-700 font-bold">({item.location.region})</small>
     </div>
     <div class="">
       <p class="my-4 font-light">
-        <Button
-          size="xs"
-          color="alternative"
-          on:click={() => showMessage(item)}
+        <Button size="xs" color="alternative" on:click={() => showMessage(item)}
           >View Details</Button
         >
       </p>
@@ -46,9 +52,12 @@
           <span>N/A</span>{/if}
       </div>
       <div>
-        <a href="#" class="text-orange-500 text-xs hover:underline flex items-center gap-1">
-            <LinkOutline class="w-3 h-3" />
-            Wikipedia</a
+        <a
+          href="#"
+          class="text-orange-500 text-xs hover:underline flex items-center gap-1"
+        >
+          <LinkOutline class="w-3 h-3" />
+          Wikipedia</a
         >
       </div>
     </div>

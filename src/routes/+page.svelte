@@ -1,10 +1,12 @@
 <script lang="ts">
   import type { ILandingZone } from "$lib/types";
   import { onMount } from "svelte";
-  import { ButtonGroup, Button } from "flowbite-svelte";
+  import { ButtonGroup, Button, Card } from "flowbite-svelte";
   import { ListOutline, GridOutline } from "flowbite-svelte-icons";
 
-  import Datatable from "../lib/components/datatable";
+  import Datatable from "$lib/components/datatable";
+
+  import Map from "$lib/components/Map.svelte";
 
   let data: ILandingZone[] = $state([]);
   let loading: boolean = $state(true);
@@ -30,7 +32,7 @@
 </script>
 
 <div class="p-8">
-  <div class="grid grid-cols-12">
+  <div class="grid grid-cols-12 gap-5 items-start">
     <div class="col-span-8">
       <div class="mb-3">
         <ButtonGroup size="xs">
@@ -50,6 +52,13 @@
       </div>
       <Datatable {data} {listView} {loading} />
     </div>
-    <div class="col-span-4"></div>
+    <div class="col-span-4 border shadow-lg rounded-lg overflow-hidden">
+      {#if loading}
+        <div class="w-full h-[450px] bg-gray-100"></div>
+      {:else}
+        <div class="my-2 mx-3 font-bold">Map View</div>
+        <Map locations={data} />
+      {/if}
+    </div>
   </div>
 </div>
