@@ -24,7 +24,7 @@
             ? "green"
             : (item as ILandingZone).status === "retired"
               ? "red"
-              : "blue"}>{(item as ILandingZone).status}</Badge
+              : "blue"} class="capitalize">{(item as ILandingZone).status}</Badge
         >
         <h3 class="text-lg font-semibold text-gray-900">{item.full_name}</h3>
       </div>

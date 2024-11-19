@@ -1,20 +1,33 @@
 <script lang="ts">
-  import type { ILandingZone } from "$lib/types";
   import { onMount } from "svelte";
-  import { ButtonGroup, Button, Card } from "flowbite-svelte";
+  import { ButtonGroup, Button, Select } from "flowbite-svelte";
   import { ListOutline, GridOutline } from "flowbite-svelte-icons";
-
+  
   import Datatable from "$lib/components/datatable";
-
-  import Map from "$lib/components/Map.svelte";
+  import Map from "$lib/components/map";
+  import DoughnutChart from "$lib/components/chart";
+  
+  import type { ILandingZone } from "$lib/types";
 
   let data: ILandingZone[] = $state([]);
   let loading: boolean = $state(true);
   let listView: "list" | "grid" = $state("list");
 
-  async function fetchLandingZones() {
+  let params: any = $state({});
+
+  let statusList = [
+    { value: "active", name: "Active" },
+    { value: "retired", name: "Retired" },
+    { value: "under_construction", name: "Under construction" },
+  ];
+
+  async function fetchLandingZones(params: any = {}) {
+    let url = new URL(`https://api.spacexdata.com/v3/landpads`);
+    for (let key in params) {
+      url.searchParams.append(key, params[key]);
+    }
     try {
-      const response = await fetch("https://api.spacexdata.com/v3/landpads");
+      const response = await fetch(url);
       if (!response.ok) {
         throw new Error("Failed to fetch landing zones");
       }
@@ -24,18 +37,21 @@
       return [];
     }
   }
-  onMount(async () => {
+
+  const init = async (params: any) => {
     loading = true;
-    data = await fetchLandingZones();
+    data = await fetchLandingZones(params);
     loading = false;
-  });
+  };
+
+  onMount(() => init({}));
 </script>
 
-<div class="p-8">
-  <div class="grid grid-cols-12 gap-5 items-start">
-    <div class="col-span-8">
-      <div class="mb-3">
-        <ButtonGroup size="xs">
+<div class="container mx-auto p-8">
+  <div class="flex gap-5 flex-col lg:flex-row items-start">
+    <div class="flex-1 order-2 lg:order-1">
+      <div class="mb-3 flex justify-between">
+        <ButtonGroup>
           <Button
             size="xs"
             on:click={() => (listView = "list")}
@@ -49,16 +65,22 @@
             ><GridOutline /></Button
           >
         </ButtonGroup>
+        <Select
+          class="mt-2 max-w-[200px]"
+          size="sm"
+          items={statusList}
+          bind:value={params.status}
+          placeholder="Select by status"
+          on:input={($event: any) => init({ status: $event.target.value })}
+        />
       </div>
       <Datatable {data} {listView} {loading} />
     </div>
-    <div class="col-span-4 border shadow-lg rounded-lg overflow-hidden">
-      {#if loading}
-        <div class="w-full h-[450px] bg-gray-100"></div>
-      {:else}
-        <div class="my-2 mx-3 font-bold">Map View</div>
-        <Map locations={data} />
-      {/if}
+    <div
+      class="w-full lg:min-w-[350px] lg:w-[350px] order-1 gap-5 lg:order-2 grid grid-cols-2 lg:grid-cols-1"
+    >
+      <Map {data} {loading} />
+      <DoughnutChart {data} {loading} />
     </div>
   </div>
 </div>

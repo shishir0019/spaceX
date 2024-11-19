@@ -105,6 +105,7 @@
           <TableBodyCell class="px-3 py-0">
             <Badge
               rounded
+              class="capitalize"
               color={(item as ILandingZone).status === "active"
                 ? "green"
                 : (item as ILandingZone).status === "retired"
@@ -116,7 +117,7 @@
       </TableBody>
     </Table>
   {:else}
-    <div class="grid md:grid-cols-4 gap-2">
+    <div class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-2">
       {#each data as item, i}
         <GridView {item} showMessage={modalOpenHandler} />
       {/each}

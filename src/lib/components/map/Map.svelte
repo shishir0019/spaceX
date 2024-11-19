@@ -11,9 +11,11 @@
   import { Vector as VectorSource } from "ol/source";
   import { Style, Circle, Fill, Stroke } from "ol/style";
   import type { ILandingZone } from "$lib/types";
+  import { Card } from "flowbite-svelte";
 
   interface Props {
     locations: ILandingZone[];
+    loading?: boolean;
   }
 
   const props: Props = $props();
@@ -28,11 +30,6 @@
 
   onMount(() => {
     const features = props.locations.map((location) => {
-      console.log({
-        name: location.full_name,
-        coords: [location.location.longitude, location.location.latitude],
-      });
-
       const feature = new Feature({
         geometry: new Point(
           fromLonLat([location.location.longitude, location.location.latitude])
@@ -81,4 +78,7 @@
   });
 </script>
 
-<div id="map" class="w-full h-[400px]"></div>
+<Card padding="none">
+  <h5 class="font-bold tracking-tight text-gray-900 mx-5 my-3">Map View</h5>
+  <div id="map" class="h-[300px] w-full"></div>
+</Card>
